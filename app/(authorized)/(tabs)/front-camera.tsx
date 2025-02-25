@@ -1,12 +1,11 @@
 import { Button, StyleSheet } from "react-native";
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
+import { ThemedText, ThemedView } from "@/components";
 import { useState } from "react";
-import ScreenWrapper from "@/components/ScreenWrapper";
+import ScreenWrapper from "@/components/screenWrapper/ScreenWrapper";
 
 export default function FrontCameraScreen() {
-  const [facing, setFacing] = useState<CameraType>("front");
+  const [facing] = useState<CameraType>("front");
   const [permission, requestPermission] = useCameraPermissions();
 
   if (!permission) {
@@ -17,12 +16,18 @@ export default function FrontCameraScreen() {
   if (!permission.granted) {
     // Camera permissions are not granted yet.
     return (
-      <ScreenWrapper>
+      <ScreenWrapper
+        style={{
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <ThemedView style={styles.permissionContainer}>
           <ThemedText style={styles.message}>
-            We need your permission to show the camera
+            We need your permission to show the camera.
           </ThemedText>
-          <Button onPress={requestPermission} title="grant permission" />
+          <Button onPress={requestPermission} title="Grant permission" />
         </ThemedView>
       </ScreenWrapper>
     );
@@ -44,17 +49,20 @@ const styles = StyleSheet.create({
   cameraContainer: {
     flex: 1,
     flexDirection: "column",
+    width: "100%",
     justifyContent: "space-between",
   },
   permissionContainer: {
     flex: 1,
     flexDirection: "column",
     alignItems: "center",
+    justifyContent: "center",
     gap: 8,
   },
   message: {
     textAlign: "center",
     paddingBottom: 10,
+    paddingHorizontal: 20,
   },
   camera: {
     flex: 1,
@@ -62,7 +70,6 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     alignSelf: "center",
-
     flexDirection: "row",
     gap: 8,
   },
