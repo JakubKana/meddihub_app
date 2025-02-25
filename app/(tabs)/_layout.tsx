@@ -28,6 +28,15 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
+        name="front-camera"
+        options={{
+          title: "Front camera",
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="camera" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="index"
         options={{
           title: "Search weather",
@@ -36,21 +45,13 @@ export default function TabLayout() {
           ),
         }}
       />
+
       <Tabs.Screen
         name="edit-profile"
         options={{
           title: "Edit profile",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="doc" color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="front-camera"
-        options={{
-          title: "Front camera",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="camera" color={color} />
           ),
         }}
       />
