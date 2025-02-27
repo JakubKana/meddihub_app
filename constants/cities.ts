@@ -5,12 +5,15 @@ export const cities: {
   value: City;
 }[] = [
   {
-    label: "Prague",
-    value: { name: "Prague", address: { postCode: "11000" } },
+    label: "Praha",
+    value: { id: 1, name: "Praha", address: { postCode: "11000" } },
   },
-  { label: "Brno", value: { name: "Brno", address: { postCode: "60200" } } },
+  {
+    label: "Brno",
+    value: { id: 2, name: "Brno", address: { postCode: "60200" } },
+  },
   {
     label: "Ostrava",
-    value: { name: "Ostrava", address: { postCode: "70200" } },
+    value: { id: 3, name: "Ostrava", address: { postCode: "70200" } },
   },
 ];

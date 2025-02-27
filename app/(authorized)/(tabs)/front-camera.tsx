@@ -31,7 +31,7 @@ export default function FrontCameraScreen() {
     <ScreenWrapper>
       <ThemedView style={styles.cameraContainer}>
         <ThemedView style={styles.titleContainer}>
-          <ThemedText type="title">Front Camera</ThemedText>
+          <ThemedText type="subtitle">Front Camera</ThemedText>
         </ThemedView>
         <CameraView style={styles.camera} facing={facing} />
       </ThemedView>

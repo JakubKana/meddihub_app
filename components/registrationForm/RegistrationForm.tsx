@@ -1,5 +1,5 @@
-import { StyleSheet, Dimensions, Alert, Platform } from "react-native";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { StyleSheet, Dimensions, Alert } from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ThemedTextInput } from "../themedTextInput/ThemedTextInput";
 
@@ -9,7 +9,6 @@ import { FormValuesType, schema } from "./RegistrationForm.types";
 import { useRegistrationStore } from "@/store/userStore";
 import { router } from "expo-router";
 import { cities } from "@/constants/cities";
-import { City } from "@/types/city";
 import { ThemedText } from "../themedText/ThemedText";
 import { ThemedView } from "../themedView/ThemedView";
 
@@ -25,22 +24,28 @@ export const RegistrationForm: FC = () => {
   } = useForm({
     resolver: zodResolver(schema),
   });
-  const { setRegistration } = useRegistrationStore();
-
-  const onSubmit: SubmitHandler<FormValuesType> = useCallback((formData) => {
-    setRegistration({
-      email: formData.email,
-      password: formData.password,
-      phoneNumber: formData.phoneNumber,
-      defaultCity: formData.defaultCity,
-    });
-    Alert.alert("Registration successful");
-    router.replace("/");
-  }, []);
+  const setRegistration = useRegistrationStore(
+    (state) => state.setRegistration
+  );
+  const onSubmit: SubmitHandler<FormValuesType> = useCallback(
+    (formData) => {
+      setRegistration({
+        email: formData.email,
+        password: formData.password,
+        phoneNumber: formData.phoneNumber,
+        defaultCity: { isDefault: true, id: 1, ...formData.defaultCity },
+      });
+      Alert.alert("Registration successful");
+      router.replace("/");
+    },
+    [setRegistration]
+  );
 
   useEffect(() => {
-    setValue("defaultCity", cities[0].value);
-  }, []);
+    console.log("Setting default city", cities[1].value);
+
+    setValue("defaultCity", cities[1].value);
+  }, [setValue]);
 
   return (
     <ThemedView style={styles.container}>
@@ -62,10 +67,7 @@ export const RegistrationForm: FC = () => {
       />
       <ThemedText
         type="small"
-        style={[
-          styles.error,
-          errors.email ? { visibility: "visible" } : { visibility: "hidden" },
-        ]}
+        style={[styles.error, errors.email ? styles.visible : styles.hidden]}
       >
         {errors?.email?.message}
       </ThemedText>
@@ -90,12 +92,7 @@ export const RegistrationForm: FC = () => {
 
       <ThemedText
         type="small"
-        style={[
-          styles.error,
-          errors.password
-            ? { visibility: "visible" }
-            : { visibility: "hidden" },
-        ]}
+        style={[styles.error, errors.password ? styles.visible : styles.hidden]}
       >
         {errors?.password?.message}
       </ThemedText>
@@ -121,9 +118,7 @@ export const RegistrationForm: FC = () => {
         type="small"
         style={[
           styles.error,
-          errors.phoneNumber
-            ? { visibility: "visible" }
-            : { visibility: "hidden" },
+          errors.phoneNumber ? styles.visible : styles.hidden,
         ]}
       >
         {errors?.phoneNumber?.message}
@@ -132,16 +127,18 @@ export const RegistrationForm: FC = () => {
         control={control}
         name="defaultCity"
         render={({ field: { onChange, onBlur, value } }) => (
-          <ThemedView style={styles.container}>
+          <ThemedView style={styles.dropdownContainer}>
             <Picker
               style={styles.dropdown}
               selectedValue={value}
-              onValueChange={onChange}
+              onValueChange={(itemValue) => {
+                console.log("SelectedItem", itemValue.address);
+                onChange(itemValue);
+              }}
               onBlur={onBlur}
             >
               {cities.map((item) => (
                 <Picker.Item
-                  style={{ width: "100%", height: 80 }}
                   key={item.label}
                   label={item.label}
                   value={item.value}
@@ -155,9 +152,7 @@ export const RegistrationForm: FC = () => {
         type="small"
         style={[
           styles.error,
-          errors.defaultCity
-            ? { visibility: "visible" }
-            : { visibility: "hidden" },
+          errors.defaultCity ? styles.visible : styles.hidden,
         ]}
       >
         {errors?.defaultCity?.message}
@@ -180,17 +175,13 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   dropdownContainer: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    // overflow: "hidden",
-    // height: 80,
     justifyContent: "center",
     width: Dimensions.get("window").width / 2,
+    height: 60,
+    overflow: "hidden",
   },
   dropdown: {
     width: Dimensions.get("window").width / 2,
-    // height: 80,
   },
   submitContainer: {
     alignSelf: "center",
@@ -204,5 +195,11 @@ const styles = StyleSheet.create({
   },
   label: {
     marginTop: 10,
+  },
+  visible: {
+    visibility: "visible",
+  },
+  hidden: {
+    visibility: "hidden",
   },
 });

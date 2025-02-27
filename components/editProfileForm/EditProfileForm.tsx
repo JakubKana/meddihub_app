@@ -10,36 +10,54 @@ import { useRegistrationStore } from "@/store/userStore";
 import { FormValuesType, schema } from "./EditProfileForm.types";
 import { cities } from "@/constants/cities";
 
-import { Dropdown } from "../dropdown/Dropdown";
 import { Picker } from "@react-native-picker/picker";
+import { useFocusEffect } from "expo-router";
 
 export const EditProfileForm: FC = () => {
   const {
     control,
     handleSubmit,
     setValue,
+
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
   });
-  const { setRegistration, registration } = useRegistrationStore();
+  const registration = useRegistrationStore((state) => state.registration);
+  const setRegistration = useRegistrationStore(
+    (state) => state.setRegistration
+  );
+  const onSubmit: SubmitHandler<FormValuesType> = useCallback(
+    (formData) => {
+      const defaultCity = cities.find(
+        (city) => city.label === formData.defaultCity.name
+      );
 
-  const onSubmit: SubmitHandler<FormValuesType> = useCallback((formData) => {
-    setRegistration({
-      email: formData.email,
-      password: formData.password,
-      phoneNumber: formData.phoneNumber,
-      defaultCity: formData.defaultCity,
-    });
-    Alert.alert("Update successful");
-  }, []);
-  console.log({ registration });
-  useEffect(() => {
-    setValue("email", registration.email);
-    setValue("password", registration.password);
-    setValue("phoneNumber", registration.phoneNumber);
-    setValue("defaultCity", cities[0].value);
-  }, []);
+      setRegistration({
+        email: formData.email,
+        password: formData.password,
+        phoneNumber: formData.phoneNumber,
+        defaultCity: { ...defaultCity?.value!, isDefault: true },
+      });
+      Alert.alert("Update successful");
+    },
+    [setRegistration]
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      setValue("email", registration.email);
+      setValue("password", registration.password);
+      setValue("phoneNumber", registration.phoneNumber);
+      setValue("defaultCity", registration.defaultCity);
+    }, [
+      registration.defaultCity,
+      registration.email,
+      registration.password,
+      registration.phoneNumber,
+      setValue,
+    ])
+  );
 
   return (
     <ThemedView style={styles.container}>
@@ -61,10 +79,7 @@ export const EditProfileForm: FC = () => {
       />
       <ThemedText
         type="small"
-        style={[
-          styles.error,
-          errors.email ? { visibility: "visible" } : { visibility: "hidden" },
-        ]}
+        style={[styles.error, errors.email ? styles.visible : styles.hidden]}
       >
         {errors?.email?.message}
       </ThemedText>
@@ -89,12 +104,7 @@ export const EditProfileForm: FC = () => {
 
       <ThemedText
         type="small"
-        style={[
-          styles.error,
-          errors.password
-            ? { visibility: "visible" }
-            : { visibility: "hidden" },
-        ]}
+        style={[styles.error, errors.password ? styles.visible : styles.hidden]}
       >
         {errors?.password?.message}
       </ThemedText>
@@ -120,9 +130,7 @@ export const EditProfileForm: FC = () => {
         type="small"
         style={[
           styles.error,
-          errors.phoneNumber
-            ? { visibility: "visible" }
-            : { visibility: "hidden" },
+          errors.phoneNumber ? styles.visible : styles.hidden,
         ]}
       >
         {errors?.phoneNumber?.message}
@@ -134,13 +142,14 @@ export const EditProfileForm: FC = () => {
         control={control}
         name="defaultCity"
         render={({ field: { onChange, onBlur, value } }) => (
-          <ThemedView style={styles.container}>
+          <ThemedView style={styles.dropdownContainer}>
             <Picker
               style={styles.dropdown}
               selectedValue={value}
-              onValueChange={onChange}
+              onValueChange={(itemValue) => {
+                onChange(itemValue);
+              }}
               onBlur={onBlur}
-              mode="dialog"
             >
               {cities.map((item) => (
                 <Picker.Item
@@ -157,9 +166,7 @@ export const EditProfileForm: FC = () => {
         type="small"
         style={[
           styles.error,
-          errors.defaultCity
-            ? { visibility: "visible" }
-            : { visibility: "hidden" },
+          errors.defaultCity ? styles.visible : styles.hidden,
         ]}
       >
         {errors?.defaultCity?.message}
@@ -181,17 +188,13 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   dropdownContainer: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    overflow: "hidden",
-    height: 80,
     justifyContent: "center",
     width: Dimensions.get("window").width / 2,
+    height: 60,
+    overflow: "hidden",
   },
   dropdown: {
     width: Dimensions.get("window").width / 2,
-    height: 80,
   },
   submitContainer: {
     alignSelf: "center",
@@ -205,5 +208,11 @@ const styles = StyleSheet.create({
   },
   label: {
     marginTop: 10,
+  },
+  visible: {
+    visibility: "visible",
+  },
+  hidden: {
+    visibility: "hidden",
   },
 });

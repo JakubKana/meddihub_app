@@ -8,4 +8,3 @@ export { ThemedButton } from "./themedButton/ThemedButton";
 export { ThemedText } from "./themedText/ThemedText";
 export { ThemedTextInput } from "./themedTextInput/ThemedTextInput";
 export { ThemedView } from "./themedView/ThemedView";
-export { Dropdown } from "./dropdown/Dropdown";

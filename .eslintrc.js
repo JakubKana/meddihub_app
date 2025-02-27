@@ -2,7 +2,7 @@
 module.exports = {
   extends: "expo",
   ignorePatterns: ["/dist/*"],
-  plugins: ["react", "react-native", "unused-imports"],
+  plugins: ["react", "react-native", "unused-imports", "react-hooks"],
   parserOptions: {
     project: "./tsconfig.json",
     ecmaVersion: 2024,
@@ -17,8 +17,8 @@ module.exports = {
     "react-native/no-unused-styles": 2,
     "react-native/split-platform-components": 2,
     "react-native/no-inline-styles": 2,
-    "react-native/no-color-literals": 2,
-    "react-native/no-raw-text": 2,
+    "react-native/no-color-literals": 1,
+    "react-native/no-raw-text": 1,
     "react-native/no-single-element-style-arrays": 2,
     "unused-imports/no-unused-imports": "warn",
     "unused-imports/no-unused-vars": [
@@ -30,6 +30,7 @@ module.exports = {
         argsIgnorePattern: "^_",
       },
     ],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
   },
-  extends: ["plugin:react-native/all"],
 };

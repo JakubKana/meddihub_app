@@ -22,7 +22,7 @@ export default function EditProfileScreen() {
         }
       >
         <ThemedView style={styles.titleContainer}>
-          <ThemedText type="title">Edit your profile</ThemedText>
+          <ThemedText type="subtitle">Edit your profile</ThemedText>
           <EditProfileForm />
           <ThemedButton
             title={"Sign out"}

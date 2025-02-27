@@ -38,9 +38,8 @@ export default function AuthProvider({
 
   useEffect(() => {
     (async (): Promise<void> => {
-      console.log("AuthProvider");
       const token = await AsyncStorage.getItem("@token");
-      console.log("AuthProvider", { token });
+
       tokenRef.current = token || "";
       setIsLoading(false);
     })();

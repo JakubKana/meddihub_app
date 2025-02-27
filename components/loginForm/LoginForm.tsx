@@ -24,20 +24,23 @@ export const LoginForm: FC = () => {
   });
   const { registration } = useRegistrationStore();
 
-  const onSubmit: SubmitHandler<FormValuesType> = useCallback((formData) => {
-    // TODO: Check store for existing user and password
-    console.log({ formData, registration });
-    if (
-      registration.email.toLowerCase() === formData.email.toLowerCase() &&
-      registration.password === formData.password
-    ) {
-      const random: string = Uuid.v4();
-      signIn(random);
-      router.replace("/(authorized)/index");
-    } else {
-      Alert.alert("Login failed");
-    }
-  }, []);
+  const onSubmit: SubmitHandler<FormValuesType> = useCallback(
+    (formData) => {
+      // TODO: Check store for existing user and password
+
+      if (
+        registration.email.toLowerCase() === formData.email.toLowerCase() &&
+        registration.password === formData.password
+      ) {
+        const random: string = Uuid.v4();
+        signIn(random);
+        router.push("/(authorized)/(tabs)");
+      } else {
+        Alert.alert("Login failed");
+      }
+    },
+    [registration.email, registration.password, signIn]
+  );
 
   return (
     <ThemedView style={styles.container}>
@@ -57,10 +60,7 @@ export const LoginForm: FC = () => {
       />
       <ThemedText
         type="small"
-        style={[
-          styles.error,
-          errors.email ? { visibility: "visible" } : { visibility: "hidden" },
-        ]}
+        style={[styles.error, errors.email ? styles.visible : styles.hidden]}
       >
         {errors?.email?.message}
       </ThemedText>
@@ -85,12 +85,7 @@ export const LoginForm: FC = () => {
 
       <ThemedText
         type="small"
-        style={[
-          styles.error,
-          errors.password
-            ? { visibility: "visible" }
-            : { visibility: "hidden" },
-        ]}
+        style={[styles.error, errors.password ? styles.visible : styles.hidden]}
       >
         {errors?.password?.message}
       </ThemedText>
@@ -123,5 +118,11 @@ const styles = StyleSheet.create({
   },
   label: {
     marginTop: 20,
+  },
+  visible: {
+    visibility: "visible",
+  },
+  hidden: {
+    visibility: "hidden",
   },
 });

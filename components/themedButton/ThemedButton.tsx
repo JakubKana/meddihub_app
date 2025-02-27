@@ -34,6 +34,7 @@ const ThemedButton = ({
       onPress={onPress}
     >
       <Text style={styles.text}>{title}</Text>
+      {props.children}
     </TouchableOpacity>
   );
 };
@@ -43,6 +44,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     shadowColor: Platform.OS === "ios" ? "rgba(0,0,0,0.2)" : "transparent",

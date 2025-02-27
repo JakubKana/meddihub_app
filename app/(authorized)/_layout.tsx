@@ -25,7 +25,6 @@ export default function RootLayout(): ReactNode {
         options={{
           presentation: "modal",
           headerBackTitle: "",
-          headerBackVisible: false,
         }}
       />
       <Stack.Screen name="+not-found" />
