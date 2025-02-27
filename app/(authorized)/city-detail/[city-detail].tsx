@@ -15,7 +15,6 @@ export default function CityDetailModal() {
   );
   const [isSearch, setIsSearch] = useState(searchParams["isSearch"] === "true");
   const [isRemoved, setIsRemoved] = useState(false);
-  console.log({ isSearch });
 
   const onPressAddToFavorites = useCallback(() => {
     setIsSearch(false);

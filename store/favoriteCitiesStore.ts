@@ -15,13 +15,6 @@ export const useFavoriteCitiesStore = create<FavoriteCitiesStore>()(
       favoriteCities: [],
       removeFavoriteCity: (id: number) => {
         set((state) => {
-          console.log("Removing city with id", id);
-          console.log(
-            "Current favorite cities",
-            state.favoriteCities,
-            state.favoriteCities.filter((city) => city.id !== id)
-          );
-
           return {
             favoriteCities: state.favoriteCities.filter(
               (city) => city.id !== id

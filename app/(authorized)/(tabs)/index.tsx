@@ -31,7 +31,6 @@ export default function HomeScreen() {
   const fetchSearchResults = useCallback(
     async (term: string, isSearch?: boolean) => {
       try {
-        console.log("Fetching data for search term:", term, isSearch);
         setError(null);
         // Perform an API request based on the search term
         const response = await fetch(
@@ -80,35 +79,31 @@ export default function HomeScreen() {
     };
 
     (async () => {
-      if (favoriteCities.length > 0) {
-        const responses = await processCities([
-          ...favoriteCities,
-          registration.defaultCity,
-        ]);
+      const responses = await processCities([
+        ...favoriteCities,
+        registration.defaultCity,
+      ]);
 
-        const mappedCities = responses.map((response, index) => {
-          if (favoriteCities[index] === undefined) {
-            return {
-              ...(registration.defaultCity as City),
-              temperature: response.main.temp,
-              weather: response.weather[0].main,
-              pressure: response.main.pressure,
-              humidity: response.main.humidity,
-            };
-          }
+      const mappedCities = responses.map((response, index) => {
+        if (favoriteCities[index] === undefined) {
           return {
-            ...(favoriteCities[index] as City),
+            ...(registration.defaultCity as City),
             temperature: response.main.temp,
             weather: response.weather[0].main,
             pressure: response.main.pressure,
             humidity: response.main.humidity,
           };
-        });
+        }
+        return {
+          ...(favoriteCities[index] as City),
+          temperature: response.main.temp,
+          weather: response.weather[0].main,
+          pressure: response.main.pressure,
+          humidity: response.main.humidity,
+        };
+      });
 
-        setCities([...mappedCities]);
-      } else {
-        console.log("No favorite cities to fetch");
-      }
+      setCities([...mappedCities]);
     })();
   }, [favoriteCities, fetchSearchResults, registration.defaultCity]);
 
@@ -122,7 +117,6 @@ export default function HomeScreen() {
     if (!registration.defaultCity?.name) {
       return;
     }
-    console.log("Fetching data for default city", registration.defaultCity);
 
     fetchSearchResults(registration.defaultCity.name, false).then(
       (response) => {

@@ -1,10 +1,10 @@
-import { StyleSheet, Dimensions, Alert } from "react-native";
+import { StyleSheet, Dimensions, Alert, Platform } from "react-native";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ThemedTextInput } from "../themedTextInput/ThemedTextInput";
 import { ThemedView } from "../themedView/ThemedView";
 import { ThemedText } from "../themedText/ThemedText";
-import { FC, useCallback, useEffect } from "react";
+import { FC, useCallback } from "react";
 import { ThemedButton } from "../themedButton/ThemedButton";
 import { useRegistrationStore } from "@/store/userStore";
 import { FormValuesType, schema } from "./EditProfileForm.types";
@@ -18,7 +18,7 @@ export const EditProfileForm: FC = () => {
     control,
     handleSubmit,
     setValue,
-
+    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
@@ -27,17 +27,24 @@ export const EditProfileForm: FC = () => {
   const setRegistration = useRegistrationStore(
     (state) => state.setRegistration
   );
+  const selectedCity = watch("defaultCity");
   const onSubmit: SubmitHandler<FormValuesType> = useCallback(
     (formData) => {
-      const defaultCity = cities.find(
-        (city) => city.label === formData.defaultCity.name
+      const findCity = cities.find(
+        // @ts-ignore
+        (c) => c.value.id === parseInt(formData.defaultCity, 10)
       );
 
       setRegistration({
         email: formData.email,
         password: formData.password,
         phoneNumber: formData.phoneNumber,
-        defaultCity: { ...defaultCity?.value!, isDefault: true },
+        defaultCity: {
+          isDefault: true,
+          id: findCity?.value.id!,
+          name: findCity?.value.name!,
+          address: findCity?.value.address!,
+        },
       });
       Alert.alert("Update successful");
     },
@@ -49,9 +56,9 @@ export const EditProfileForm: FC = () => {
       setValue("email", registration.email);
       setValue("password", registration.password);
       setValue("phoneNumber", registration.phoneNumber);
-      setValue("defaultCity", registration.defaultCity);
+      setValue("defaultCity", registration.defaultCity.id);
     }, [
-      registration.defaultCity,
+      registration.defaultCity.id,
       registration.email,
       registration.password,
       registration.phoneNumber,
@@ -141,26 +148,37 @@ export const EditProfileForm: FC = () => {
       <Controller
         control={control}
         name="defaultCity"
-        render={({ field: { onChange, onBlur, value } }) => (
-          <ThemedView style={styles.dropdownContainer}>
-            <Picker
-              style={styles.dropdown}
-              selectedValue={value}
-              onValueChange={(itemValue) => {
-                onChange(itemValue);
-              }}
-              onBlur={onBlur}
-            >
-              {cities.map((item) => (
-                <Picker.Item
-                  key={item.label}
-                  label={item.label}
-                  value={item.value}
-                />
-              ))}
-            </Picker>
-          </ThemedView>
-        )}
+        render={({ field: { onChange, onBlur } }) => {
+          return (
+            <ThemedView style={styles.dropdownContainer}>
+              <Picker
+                style={styles.dropdown}
+                selectedValue={selectedCity}
+                enabled={true}
+                onValueChange={(itemValue) => {
+                  // This is a workaround for iOS, as the picker does not trigger the onChange event
+                  // WT actual Fuck IOS is setting value but UI is reseting???
+                  if (Platform.OS === "ios") {
+                    // @ts-ignores
+                    onChange(parseInt(itemValue, 10));
+                  } else {
+                    onChange(itemValue);
+                  }
+                }}
+                numberOfLines={1}
+                onBlur={onBlur}
+              >
+                {cities.map((item) => (
+                  <Picker.Item
+                    key={item.label}
+                    label={item.label}
+                    value={item.value.id}
+                  />
+                ))}
+              </Picker>
+            </ThemedView>
+          );
+        }}
       />
       <ThemedText
         type="small"

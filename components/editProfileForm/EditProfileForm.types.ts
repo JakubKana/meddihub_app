@@ -18,10 +18,7 @@ export const schema = z.object({
         "Invalid phone number, please use (+420 or 00420)(123456789) format",
     }
   ),
-  defaultCity: z.object({
-    name: z.string(),
-    address: z.object({ postCode: z.string() }),
-  }),
+  defaultCity: z.number(),
 });
 
 export type FormValuesType = z.infer<typeof schema>;

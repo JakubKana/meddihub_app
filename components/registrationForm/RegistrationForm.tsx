@@ -1,5 +1,5 @@
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { StyleSheet, Dimensions, Alert } from "react-native";
+import { StyleSheet, Dimensions, Alert, Platform } from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ThemedTextInput } from "../themedTextInput/ThemedTextInput";
 
@@ -27,13 +27,24 @@ export const RegistrationForm: FC = () => {
   const setRegistration = useRegistrationStore(
     (state) => state.setRegistration
   );
+
   const onSubmit: SubmitHandler<FormValuesType> = useCallback(
     (formData) => {
+      const findCity = cities.find(
+        // @ts-ignore
+        (c) => c.value.id === parseInt(formData.defaultCity, 10)
+      );
+
       setRegistration({
         email: formData.email,
         password: formData.password,
         phoneNumber: formData.phoneNumber,
-        defaultCity: { isDefault: true, id: 1, ...formData.defaultCity },
+        defaultCity: {
+          isDefault: true,
+          id: findCity?.value.id!,
+          name: findCity?.value.name!,
+          address: findCity?.value.address!,
+        },
       });
       Alert.alert("Registration successful");
       router.replace("/");
@@ -42,9 +53,7 @@ export const RegistrationForm: FC = () => {
   );
 
   useEffect(() => {
-    console.log("Setting default city", cities[1].value);
-
-    setValue("defaultCity", cities[1].value);
+    setValue("defaultCity", cities[1].value.id);
   }, [setValue]);
 
   return (
@@ -132,8 +141,14 @@ export const RegistrationForm: FC = () => {
               style={styles.dropdown}
               selectedValue={value}
               onValueChange={(itemValue) => {
-                console.log("SelectedItem", itemValue.address);
-                onChange(itemValue);
+                // This is a workaround for iOS, as the picker does not trigger the onChange event
+                // WT actual Fuck IOS is setting value but UI is reseting???
+                if (Platform.OS === "ios") {
+                  // @ts-ignores
+                  onChange(parseInt(itemValue, 10));
+                } else {
+                  onChange(itemValue);
+                }
               }}
               onBlur={onBlur}
             >
@@ -141,7 +156,7 @@ export const RegistrationForm: FC = () => {
                 <Picker.Item
                   key={item.label}
                   label={item.label}
-                  value={item.value}
+                  value={item.value.id}
                 />
               ))}
             </Picker>
