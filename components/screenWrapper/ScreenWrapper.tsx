@@ -1,4 +1,4 @@
-import { StyleProp, StyleSheet, ViewProps } from "react-native";
+import { StyleSheet, ViewProps } from "react-native";
 import { PropsWithChildren } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 

@@ -1,7 +1,11 @@
-export { Collapsible } from "./collapsible/Collapsible";
+export { EditProfileForm } from "./editProfileForm/EditProfileForm";
 export { ExternalLink } from "./externalLink/ExternalLink";
 export { HapticTab } from "./hapticTab/HapticTab";
 export { IconSymbol } from "./iconSymbol/IconSymbol";
 export { ParallaxScrollView } from "./parallaxScrollView/ParallaxScrollView";
+export { RegistrationForm } from "./registrationForm/RegistrationForm";
+export { ThemedButton } from "./themedButton/ThemedButton";
 export { ThemedText } from "./themedText/ThemedText";
+export { ThemedTextInput } from "./themedTextInput/ThemedTextInput";
 export { ThemedView } from "./themedView/ThemedView";
+export { Dropdown } from "./dropdown/Dropdown";

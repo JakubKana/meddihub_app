@@ -16,13 +16,7 @@ export default function FrontCameraScreen() {
   if (!permission.granted) {
     // Camera permissions are not granted yet.
     return (
-      <ScreenWrapper
-        style={{
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <ScreenWrapper>
         <ThemedView style={styles.permissionContainer}>
           <ThemedText style={styles.message}>
             We need your permission to show the camera.

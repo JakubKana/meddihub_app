@@ -1,31 +1,49 @@
 import { Image, StyleSheet } from "react-native";
-
-import { ParallaxScrollView, ThemedText, ThemedView } from "@/components";
+import { router } from "expo-router";
+import {
+  EditProfileForm,
+  ParallaxScrollView,
+  ThemedButton,
+  ThemedText,
+  ThemedView,
+} from "@/components";
+import ScreenWrapper from "@/components/screenWrapper/ScreenWrapper";
 
 export default function EditProfileScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
-      headerImage={
-        <Image
-          source={require("@/assets/images/edit-profile-min.png")}
-          style={styles.reactLogo}
-        />
-      }
-    >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Edit your profile</ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <ScreenWrapper>
+      <ParallaxScrollView
+        headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
+        headerImage={
+          <Image
+            source={require("@/assets/images/edit-profile-min.png")}
+            style={styles.editLogo}
+          />
+        }
+      >
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText type="title">Edit your profile</ThemedText>
+          <EditProfileForm />
+          <ThemedButton
+            title={"Sign out"}
+            onPress={() => {
+              router.replace("/login");
+            }}
+          />
+        </ThemedView>
+      </ParallaxScrollView>
+    </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
   titleContainer: {
-    flexDirection: "row",
-    gap: 8,
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  reactLogo: {
+  editLogo: {
     height: 200,
     width: "100%",
     bottom: 0,

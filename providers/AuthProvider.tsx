@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const AuthContext = createContext<{
   signIn: (arg0: string) => void;
   signOut: () => void;
@@ -54,6 +55,7 @@ export default function AuthProvider({
   const signOut = useCallback(async () => {
     await AsyncStorage.setItem("@token", "");
     tokenRef.current = null;
+
     router.replace("/login");
   }, []);
 

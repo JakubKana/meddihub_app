@@ -16,7 +16,18 @@ export default function RootLayout(): ReactNode {
 
   return (
     <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="(tabs)"
+        options={{ title: "Search", headerShown: false }}
+      />
+      <Stack.Screen
+        name="city-detail/[city-detail]"
+        options={{
+          presentation: "modal",
+          headerBackTitle: "",
+          headerBackVisible: false,
+        }}
+      />
       <Stack.Screen name="+not-found" />
     </Stack>
   );
