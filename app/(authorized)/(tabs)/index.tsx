@@ -13,7 +13,7 @@ import ScreenWrapper from "@/components/screenWrapper/ScreenWrapper";
 import { useRegistrationStore } from "@/store/userStore";
 import { City, CityItem } from "@/types/city";
 import { Ionicons } from "@expo/vector-icons";
-import { debounce } from "@/app/utils/debounce";
+import { debounce } from "@/utils/debounce";
 import { useFavoriteCitiesStore } from "@/store/favoriteCitiesStore";
 import { WeatherData } from "@/types/weather";
 
